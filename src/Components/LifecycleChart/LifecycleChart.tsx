@@ -252,7 +252,7 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
       labels={({ datum }: { datum: Datum }) =>
         datum.childName.includes('series-') && datum.y !== null ? `${datum.x}: ${datum.y?.toLocaleDateString()}` : null
       }
-      labelComponent={<ChartLegendTooltip legendData={getLegendData()} title={(datum) => datum.x} />}
+      labelComponent={<ChartLegendTooltip legendData={getLegendData()} title={(datum) => (datum.x ? datum.x : 'no datum')} />}
       mouseFollowTooltips
       voronoiDimension="x"
       voronoiPadding={50}
@@ -268,26 +268,14 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
         legendAllowWrap
         ariaDesc="Support timelines of packages and RHEL versions"
         ariaTitle="Lifecycle bar chart"
-        containerComponent={
-          <ChartVoronoiContainer
-            labelComponent={<ChartTooltip constrainToVisibleArea />}
-            labels={({ datum }) => {
-              if (datum.name && datum.packageType && datum.y0) {
-                return `Name: ${datum.name}\nRelease: ${datum.version}\nSupport Type: ${datum.packageType}\nSystems: ${
-                  datum.numSystems
-                }\nStart: ${formatDate(new Date(datum.y0))}\nEnd: ${formatDate(new Date(datum.y))}`;
-              }
-              return formatDate(new Date());
-            }}
-          />
-        }
-        legendData={[
-          { name: 'Supported', symbol: { fill: 'var(--pf-v5-global--success-color--100)' } },
-          { name: 'Support ends within 6 months', symbol: { fill: 'var(--pf-v5-global--warning-color--100)' } },
-          { name: 'Retired', symbol: { fill: 'var(--pf-v5-global--danger-color--100)' } },
-          { name: 'Not installed', symbol: { fill: 'var(--pf-v5-global--palette--blue-200)' } },
-          { name: 'Upcoming release', symbol: { fill: 'var(--pf-v5-global--palette--blue-100)' } },
-        ]}
+        containerComponent={container}
+        events={getInteractiveLegendEvents({
+          chartNames: [groupedData.map((_, i) => `series-${i}`)],
+          isHidden,
+          legendName: 'chart5-ChartLegend',
+          onLegendClick: handleLegendClick,
+        })}
+        legendComponent={<ChartLegend name="chart5-ChartLegend" data={getLegendData()} />}
         legendPosition="bottom-left"
         name="chart5"
         padding={{
@@ -309,17 +297,16 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
           />
         )}
         <ChartAxis showGrid tickValues={fetchTicks()} />
-        <ChartGroup horizontal>{updatedLifecycleData.map((data, index) => getChart(data, index))}</ChartGroup>
-        <ChartLine
-          y={() => Date.now()}
-          y0={() => Date.now()}
-          style={{
-            data: {
-              stroke: 'black',
-              strokeWidth: 0.5,
-            },
-          }}
-        />
+        <ChartGroup horizontal offset={20}>
+          {groupedData.map((s, index) => (
+            <ChartBar
+              data={!hiddenSeries.has(index) ? s.datapoints : s.datapoints.map((d) => ({ ...d, y: null }))}
+              key={`bar-${index}`}
+              name={`series-${index}`}
+              barWidth={20}
+            />
+          ))}
+        </ChartGroup>
       </Chart>
     </div>
   );
