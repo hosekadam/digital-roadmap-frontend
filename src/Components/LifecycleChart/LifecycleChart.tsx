@@ -289,8 +289,6 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
 
   const isHidden = (index: number) => hiddenSeries.has(index);
   const isDataAvailable = () => hiddenSeries.size !== groupedData.length;
-
-  console.log(getLegendData);
   console.log(updatedLifecycleData);
   console.log(groupedData);
   console.log(lifecycleData);
@@ -311,7 +309,11 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
         return formatDate(new Date());
       }}
       labelComponent={
-        <ChartLegendTooltip legendData={getLegendData()} title={(datum) => (datum.x ? datum.x : 'no datum')} />
+        <ChartLegendTooltip
+          legendData={getLegendData()}
+          title={(datum) => (datum.x ? datum.x : 'no datum')}
+          constrainToVisibleArea={true}
+        />
       }
       mouseFollowTooltips
       voronoiDimension="x"
