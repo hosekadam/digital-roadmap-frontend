@@ -40,8 +40,10 @@ interface BarData extends Omit<ChartDataObject, 'x'> {
 interface Datum {
   childName: string;
   x: string;
-  y?: Date | null;
-  name: string;
+  y?: string | null;
+  name?: string | null;
+  packageType?: string | null;
+  y0?: string | null;
 }
 
 const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: LifecycleChartProps) => {
@@ -136,6 +138,8 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
             `${item.rhel_major_version}`,
             `${item.systems ?? 'N/A'}`
           );
+          formatYearAxisData(item.start_date, item.end_date);
+          return;
         }
         formatChartData(
           `${item.name} ${item.stream}`,
@@ -179,20 +183,19 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
   });
 
   // group by package type
-  const groupedData = uniqueTypes.map((type, index) => ({
+  const groupedData = uniqueTypes.map((type) => ({
     packageType: type,
     datapoints: updatedLifecycleData
       .flat()
       .filter((d) => d.packageType === type)
       .map((d) => ({
-        x: d.x,
-        y: d.y,
-        y0: d.y0,
+        name: d.name,
         packageType: d.packageType,
         version: d.version,
         numSystems: d.numSystems,
-        typeID: index,
-        name: d.x,
+        x: d.x,
+        y: d.y,
+        y0: d.y0,
       })),
   }));
 
@@ -200,6 +203,7 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
     groupedData.map((s, index) => ({
       childName: `series-${index}`,
       name: s.packageType,
+      symbol: { fill: `${getPackageColor(s.packageType)}` },
       ...getInteractiveLegendItemStyles(hiddenSeries.has(index)),
     }));
 
@@ -217,6 +221,7 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
   };
 
   const getPackageColor = (datum: string) => {
+    debugger;
     switch (datum) {
       case 'Retired':
         return 'var(--pf-v5-global--danger-color--100)';
@@ -283,7 +288,7 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
   };
 
   const isHidden = (index: number) => hiddenSeries.has(index);
-  const isDataAvailable = () => hiddenSeries.size !== uniqueTypes.length;
+  const isDataAvailable = () => hiddenSeries.size !== groupedData.length;
 
   console.log(getLegendData);
   console.log(updatedLifecycleData);
@@ -297,10 +302,16 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
   const container = React.cloneElement(
     <CursorVoronoiContainer
       cursorDimension="x"
-      labels={({ datum }: { datum: Datum }) =>
-        datum.childName.includes('series-') && datum.y !== null
-          ? `${datum.name}: ${datum.y?.toLocaleDateString()}`
-          : null
+      labels={({ datum }: { datum: ChartDataObject }) => {
+        if (datum.name && datum.packageType && datum.y0) {
+          return `Name: ${datum.name}\nRelease: ${datum.version}\nSupport Type: ${datum.packageType}\nSystems: ${
+            datum.numSystems
+          }\nStart: ${formatDate(new Date(datum.y0))}\nEnd: ${formatDate(new Date(datum.y))}`;
+        }
+        return formatDate(new Date());
+      }}
+      labelComponent={
+        <ChartLegendTooltip legendData={getLegendData()} title={(datum) => (datum.x ? datum.x : 'no datum')} />
       }
       mouseFollowTooltips
       voronoiDimension="x"
@@ -319,7 +330,7 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
         ariaTitle="Lifecycle bar chart"
         containerComponent={container}
         events={getInteractiveLegendEvents({
-          chartNames: [updatedLifecycleData.map((_, i) => `series-${i}`)],
+          chartNames: [groupedData.map((_, i) => `series-${i}`)],
           isHidden,
           legendName: 'chart5-ChartLegend',
           onLegendClick: handleLegendClick,
@@ -346,7 +357,34 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
           />
         )}
         <ChartAxis showGrid tickValues={fetchTicks()} />
-        <ChartGroup horizontal>{updatedLifecycleData.map((data, index) => getChart(data, index))}</ChartGroup>
+        <ChartGroup horizontal>
+          {groupedData.map((s, index) => {
+            console.log(s);
+            console.log(index);
+            console.log('////');
+            return (
+              <ChartBar
+                data={
+                  !hiddenSeries.has(index)
+                    ? s.datapoints
+                    : s.datapoints.map((d) => {
+                        console.log(d);
+                        return { ...d, x: null };
+                      })
+                }
+                key={`bar-${index}`}
+                name={`series-${index}`}
+                barWidth={10}
+                style={{
+                  data: {
+                    fill: getPackageColor(s.packageType),
+                    stroke: getPackageColor(s.packageType),
+                  },
+                }}
+              />
+            );
+          })}
+        </ChartGroup>
         <ChartLine
           y={() => Date.now()}
           y0={() => Date.now()}
