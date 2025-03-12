@@ -5,11 +5,9 @@ import {
   ChartAxis,
   ChartBar,
   ChartGroup,
-  ChartLine,
   ChartLegend,
+  ChartLine,
   ChartTooltip,
-  ChartLegendTooltip,
-  createContainer,
   ChartVoronoiContainer,
   getInteractiveLegendEvents,
   getInteractiveLegendItemStyles,
@@ -129,18 +127,6 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
         if (item.start_date === 'Unknown' || item.end_date === 'Unknown') {
           return;
         }
-        if (item.rhel_major_version === 8) {
-          formatChartData(
-            `${item.name} ${item.stream}`,
-            item.start_date,
-            item.end_date,
-            'Retired',
-            `${item.rhel_major_version}`,
-            `${item.systems ?? 'N/A'}`
-          );
-          formatYearAxisData(item.start_date, item.end_date);
-          return;
-        }
         formatChartData(
           `${item.name} ${item.stream}`,
           item.start_date,
@@ -221,7 +207,6 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
   };
 
   const getPackageColor = (datum: string) => {
-    debugger;
     switch (datum) {
       case 'Retired':
         return 'var(--pf-v5-global--danger-color--100)';
@@ -296,10 +281,8 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
     debugger;
   }
 
-  const CursorVoronoiContainer = createContainer('voronoi', 'cursor');
   const container = React.cloneElement(
-    <CursorVoronoiContainer
-      cursorDimension="x"
+    <ChartVoronoiContainer
       labels={({ datum }: { datum: ChartDataObject }) => {
         if (datum.name && datum.packageType && datum.y0) {
           return `Name: ${datum.name}\nRelease: ${datum.version}\nSupport Type: ${datum.packageType}\nSystems: ${
@@ -308,16 +291,9 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
         }
         return formatDate(new Date());
       }}
-      labelComponent={
-        <ChartLegendTooltip
-          legendData={getLegendData()}
-          title={(datum) => (datum.x ? datum.x : 'no datum')}
-          constrainToVisibleArea={true}
-        />
-      }
-      mouseFollowTooltips
+      labelComponent={<ChartTooltip constrainToVisibleArea={true} />}
       voronoiDimension="x"
-      voronoiPadding={50}
+      voronoiPadding={100}
     />,
     {
       disable: !isDataAvailable(),
