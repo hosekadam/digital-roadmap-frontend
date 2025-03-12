@@ -110,7 +110,7 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
     }
     if (dataType === 'appLifecycle') {
       (lifecycleData as Stream[]).forEach((item) => {
-        if (item.start_date === 'Unknown' || item.end_date === 'Unknown' || item.rhel_major_version === 8) {
+        if (item.start_date === 'Unknown' || item.end_date === 'Unknown') {
           return;
         }
         formatChartData(
@@ -236,6 +236,7 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
               return formatDate(new Date());
             }}
             labelComponent={<ChartTooltip constrainToVisibleArea />}
+            voronoiPadding={50}
           />
         }
         events={getInteractiveLegendEvents({
