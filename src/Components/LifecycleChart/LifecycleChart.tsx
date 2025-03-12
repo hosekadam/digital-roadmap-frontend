@@ -167,8 +167,8 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
     .concat([
       { packageType: 'Support ends within 6 months', datapoints: [] },
       { packageType: 'Retired', datapoints: [] },
-      { packageType: 'Upcoming release', datapoints: [] },
       { packageType: 'Not installed', datapoints: [] },
+      { packageType: 'Upcoming release', datapoints: [] },
     ]);
 
   const getLegendData = () =>
@@ -216,22 +216,6 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
 
   const isHidden = (index: number) => hiddenSeries.has(index);
 
-  const container = (
-    <ChartVoronoiContainer
-      labels={({ datum }: { datum: ChartDataObject }) => {
-        if (datum.name && datum.packageType && datum.y0) {
-          return `Name: ${datum.name}\nRelease: ${datum.version}\nSupport Type: ${datum.packageType}\nSystems: ${
-            datum.numSystems
-          }\nStart: ${formatDate(new Date(datum.y0))}\nEnd: ${formatDate(new Date(datum.y))}`;
-        }
-        return formatDate(new Date());
-      }}
-      labelComponent={<ChartTooltip constrainToVisibleArea={true} />}
-      voronoiDimension="x"
-      voronoiPadding={100}
-    />
-  );
-
   // needs to be a specific tuple format or filter on hover breaks
   const chartNames = groupedData.map((_, i) => [`series-${i}`]) as [string[]];
 
@@ -241,7 +225,19 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
         legendAllowWrap
         ariaDesc="Support timelines of packages and RHEL versions"
         ariaTitle="Lifecycle bar chart"
-        containerComponent={container}
+        containerComponent={
+          <ChartVoronoiContainer
+            labels={({ datum }: { datum: ChartDataObject }) => {
+              if (datum.name && datum.packageType && datum.y0) {
+                return `Name: ${datum.name}\nRelease: ${datum.version}\nSupport Type: ${datum.packageType}\nSystems: ${
+                  datum.numSystems
+                }\nStart: ${formatDate(new Date(datum.y0))}\nEnd: ${formatDate(new Date(datum.y))}`;
+              }
+              return formatDate(new Date());
+            }}
+            labelComponent={<ChartTooltip constrainToVisibleArea />}
+          />
+        }
         events={getInteractiveLegendEvents({
           chartNames,
           isHidden,
