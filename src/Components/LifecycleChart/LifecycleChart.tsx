@@ -35,14 +35,6 @@ interface BarData extends Omit<ChartDataObject, 'x'> {
   x: number;
   fill: string;
 }
-interface Datum {
-  childName: string;
-  x: string;
-  y?: string | null;
-  name?: string | null;
-  packageType?: string | null;
-  y0?: string | null;
-}
 
 const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: LifecycleChartProps) => {
   //check data type and contruct a chart array
@@ -194,7 +186,6 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
     }));
 
   const handleLegendClick = (props: { index: number }) => {
-    debugger;
     if (!hiddenSeries.delete(props.index)) {
       hiddenSeries.add(props.index);
     }
@@ -226,12 +217,6 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
   const getChart = (lifecycle: ChartDataObject[], index: number) => {
     const data: BarData[] = [];
 
-    //debugger;
-
-    // if (hiddenSeries.has(index)) {
-    //   return null;
-    // }
-
     lifecycle?.forEach((datum: ChartDataObject) => {
       // for groupedData use lifecycle?.datapoints
       if (!hiddenSeries.has(datum.typeID)) {
@@ -243,10 +228,6 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
         });
       }
     });
-
-    if (data?.length !== 0) {
-      debugger;
-    }
 
     if (data?.length === 0) {
       return null;
@@ -274,12 +255,6 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
 
   const isHidden = (index: number) => hiddenSeries.has(index);
   const isDataAvailable = () => hiddenSeries.size !== groupedData.length;
-  console.log(updatedLifecycleData);
-  console.log(groupedData);
-  console.log(lifecycleData);
-  if (groupedData?.length !== 0) {
-    debugger;
-  }
 
   const container = React.cloneElement(
     <ChartVoronoiContainer
@@ -337,16 +312,12 @@ const LifecycleChart: React.FC<LifecycleChartProps> = ({ lifecycleData }: Lifecy
         <ChartAxis showGrid tickValues={fetchTicks()} />
         <ChartGroup horizontal>
           {groupedData.map((s, index) => {
-            console.log(s);
-            console.log(index);
-            console.log('////');
             return (
               <ChartBar
                 data={
                   !hiddenSeries.has(index)
                     ? s.datapoints
                     : s.datapoints.map((d) => {
-                        console.log(d);
                         return { ...d, x: null };
                       })
                 }
