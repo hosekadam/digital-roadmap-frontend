@@ -33,6 +33,7 @@ import {
   filterChartDataBySystems,
 } from './filteringUtils';
 const LifecycleChart = lazy(() => import('../../Components/LifecycleChart/LifecycleChart'));
+const LifecycleChartSystem = lazy(() => import('../../Components/LifecycleChartSystem/LifecycleChartSystem'));
 const LifecycleFilters = lazy(() => import('../../Components/LifecycleFilters/LifecycleFilters'));
 const LifecycleTable = lazy(() => import('../../Components/LifecycleTable/LifecycleTable'));
 import { download, generateCsv, mkConfig } from 'export-to-csv';
@@ -331,9 +332,15 @@ const LifecycleTab: React.FC<React.PropsWithChildren> = () => {
       return emptyState;
     }
 
+    // TEMPORARY BUG FIX for https://github.com/patternfly/patternfly-react/issues/11724
+    // RSPEED-908
+    // When the bug is resolved, this can be removed and just the LifecycleChart component can be used.
+    // NOTE: The LifecycleChartSystem is 1:1 copy of LifecycleChart, just needs to be separated.
+    const ChartComponent = lifecycleDropdownValue === OTHER_DROPDOWN_VALUE ? LifecycleChartSystem : LifecycleChart;
+
     return (
       <>
-        <LifecycleChart lifecycleData={filteredChartData} />
+        <ChartComponent lifecycleData={filteredChartData} />
         <LifecycleTable data={filteredTableData} />
       </>
     );
