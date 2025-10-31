@@ -327,8 +327,8 @@ export const UpcomingTable: React.FunctionComponent<UpcomingTableProps> = ({
           <Tr>
             {filteredData.length > 0 && (
               <Th>
-                <span className="pf-v5-c-table__td pf-v5-c-table__toggle">
-                  <Button icon={<div className="pf-v5-c-table__toggle-icon">
+                <span className="pf-v6-c-table__td pf-v6-c-table__toggle">
+                  <Button icon={<div className="pf-v6-c-table__toggle-icon">
                       <AngleDownIcon />
                     </div>}
                     aria-expanded={expandedRows.size === paginatedRows.length}

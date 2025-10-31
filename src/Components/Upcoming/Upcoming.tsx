@@ -425,7 +425,12 @@ const UpcomingTab: React.FC<React.PropsWithChildren> = () => {
 
   const lockedState = (
     <Bullseye>
-      <EmptyState  headingLevel="h2" icon={LockIcon}  titleText="Planning is not yet enabled for your organization" variant={EmptyStateVariant.sm}>
+      <EmptyState
+        headingLevel="h2"
+        icon={LockIcon}
+        titleText="Planning is not yet enabled for your organization"
+        variant={EmptyStateVariant.sm}
+      >
         <EmptyStateBody>Workspace filtering has not been implemented.</EmptyStateBody>
         <EmptyStateFooter>
           <EmptyStateActions>
@@ -442,7 +447,12 @@ const UpcomingTab: React.FC<React.PropsWithChildren> = () => {
   // This is basically the same as ErrorState only with custom action at the bottom.
   const timeoutState = (
     <Bullseye>
-      <EmptyState  headingLevel="h2" icon={ExclamationCircleIcon}  titleText="Timeout reached when calculating response" variant={EmptyStateVariant.sm}>
+      <EmptyState
+        headingLevel="h2"
+        icon={ExclamationCircleIcon}
+        titleText="Timeout reached when calculating response"
+        variant={EmptyStateVariant.sm}
+      >
         <EmptyStateBody>This is a known issue that we are working to resolve.</EmptyStateBody>
         <EmptyStateFooter>
           <EmptyStateActions>
@@ -474,7 +484,12 @@ const UpcomingTab: React.FC<React.PropsWithChildren> = () => {
   if (noAllDataAvailable) {
     return (
       <Bullseye>
-        <EmptyState  headingLevel="h2" icon={CubesIcon}  titleText="No roadmap data available" variant={EmptyStateVariant.lg}>
+        <EmptyState
+          headingLevel="h2"
+          icon={CubesIcon}
+          titleText="No roadmap data available"
+          variant={EmptyStateVariant.lg}
+        >
           <EmptyStateBody>
             We could not find any Roadmap data. Please add systems to inventory to view Roadmap information.
           </EmptyStateBody>
@@ -497,10 +512,13 @@ const UpcomingTab: React.FC<React.PropsWithChildren> = () => {
           <GridItem span={4}>
             <Card ouiaId="upcoming-deprecations" isClickable style={{ height: '135px' }}>
               <CardHeader
-                selectableActions={{onClickAction: () => handleCardClick('deprecations'), selectableActionAriaLabelledby: 'Deprecations'}}
+                selectableActions={{
+                  onClickAction: () => handleCardClick('deprecations'),
+                  selectableActionAriaLabelledby: 'Deprecations',
+                }}
               >
                 <CardTitle className="drf-lifecycle__upcoming-card">
-                  <ExclamationCircleIcon color={'#C9190B'} />
+                  <ExclamationCircleIcon color={'var(--pf-t--global--color--status--danger--100)'} />
                   Deprecations
                 </CardTitle>
               </CardHeader>
@@ -513,10 +531,13 @@ const UpcomingTab: React.FC<React.PropsWithChildren> = () => {
           <GridItem span={4}>
             <Card ouiaId="upcoming-changes" isClickable style={{ height: '135px' }}>
               <CardHeader
-                selectableActions={{onClickAction: () => handleCardClick('changes'), selectableActionAriaLabelledby: 'filter-by-type-2'}}
+                selectableActions={{
+                  onClickAction: () => handleCardClick('changes'),
+                  selectableActionAriaLabelledby: 'filter-by-type-2',
+                }}
               >
                 <CardTitle className="drf-lifecycle__upcoming-card">
-                  <ExclamationTriangleIcon color={'#FFA500'} />
+                  <ExclamationTriangleIcon color={'var(--pf-t--global--color--status--warning--200)'} />
                   Changes
                 </CardTitle>
               </CardHeader>
@@ -529,10 +550,13 @@ const UpcomingTab: React.FC<React.PropsWithChildren> = () => {
           <GridItem span={4}>
             <Card ouiaId="upcoming-additions" isClickable style={{ height: '135px' }}>
               <CardHeader
-                selectableActions={{onClickAction: () => handleCardClick('additions'), selectableActionAriaLabelledby: 'filter-by-type-3'}}
+                selectableActions={{
+                  onClickAction: () => handleCardClick('additions'),
+                  selectableActionAriaLabelledby: 'filter-by-type-3',
+                }}
               >
                 <CardTitle className="drf-lifecycle__upcoming-card">
-                  <InfoCircleIcon color={'#2B9AF3'} />
+                  <InfoCircleIcon color={'var(--pf-t--global--color--status--info--100)'} />
                   Additions and enhancements
                 </CardTitle>
               </CardHeader>

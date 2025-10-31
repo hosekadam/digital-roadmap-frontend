@@ -39,12 +39,12 @@
   align-items: stretch; /* This ensures all children have the same height */
 }
 
-.drf-lifecycle__toggle-group-fixed-height .pf-v5-c-toggle-group__item {
+.drf-lifecycle__toggle-group-fixed-height .pf-v6-c-toggle-group__item {
   flex: 1; /* makes all items equally wide */
   display: flex;
 }
 
-.drf-lifecycle__toggle-group-fixed-height .pf-v5-c-toggle-group__button {
+.drf-lifecycle__toggle-group-fixed-height .pf-v6-c-toggle-group__button {
   min-height: 40px; /* Set a minimum height for consistency */
   height: 100%;
   display: flex;

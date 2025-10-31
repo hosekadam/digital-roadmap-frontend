@@ -262,7 +262,7 @@ describe('LifecycleTab Component', () => {
 
       // Check for PatternFly Spinner - look for the spinner element or loading text
       const spinnerElement =
-        document.querySelector('.pf-v5-c-spinner') ||
+        document.querySelector('.pf-v6-c-spinner') ||
         document.querySelector('[role="progressbar"]') ||
         screen.queryByText(/loading/i);
 
