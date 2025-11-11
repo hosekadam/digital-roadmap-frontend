@@ -511,7 +511,7 @@ const UpcomingTab: React.FC<React.PropsWithChildren> = () => {
                 }}
               >
                 <CardTitle className="drf-lifecycle__upcoming-card">
-                  <ExclamationCircleIcon color={'#C9190B'} />
+                  <ExclamationCircleIcon color={'var(--pf-t--global--color--status--danger--100)'} />
                   Deprecations
                 </CardTitle>
               </CardHeader>
@@ -530,7 +530,7 @@ const UpcomingTab: React.FC<React.PropsWithChildren> = () => {
                 }}
               >
                 <CardTitle className="drf-lifecycle__upcoming-card">
-                  <ExclamationTriangleIcon color={'#FFA500'} />
+                  <ExclamationTriangleIcon color={'var(--pf-t--global--color--status--warning--200)'} />
                   Changes
                 </CardTitle>
               </CardHeader>
